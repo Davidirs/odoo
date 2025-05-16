@@ -4,7 +4,8 @@ set -e
 
 # 1. ===== CONFIGURACIÓN DE VARIABLES DE POSTGRES =====
 # - Usa PGHOST, PGPORT, etc. de Render (NO más 'db' como fallback)
-: ${HOST:=${PGHOST}}  # Obligatorio en Render (sin valor por defecto 'db')
+# Ahora (obligatorio usar PGHOST):
+HOST="${PGHOST:?Error: PGHOST no está definido}"  # Falla explícitamente si PGHOST no existe
 : ${PORT:=${PGPORT:-5432}}
 : ${USER:=${PGUSER:-odoo}}
 : ${PASSWORD:=${PGPASSWORD:-odoo}}
@@ -36,6 +37,12 @@ check_config "db_port" "$PORT"
 check_config "db_user" "$USER"
 check_config "db_password" "$PASSWORD"
 echo "Conectando a PostgreSQL: host=$HOST, user=$USER, db_name=${PGDATABASE:-odoo}"
+echo "=== Valores finales ==="
+echo "HOST=$HOST"
+echo "PORT=$PORT"
+echo "USER=$USER"
+echo "PASSWORD=$PASSWORD"
+echo "DB_NAME=${PGDATABASE:-odoo_globaltecnologies}"
 # 4. ===== EJECUCIÓN DE ODOO =====
 case "$1" in
     -- | odoo)
